@@ -1,11 +1,14 @@
 import React,{ Component } from 'react';
 import Location from './Location';
 import WeatherData from './WeatherData';
+import transformWeather from './../../services/transformWeather';
+import { api_weather } from './../../constants/api_url';
 import {
   SUN,
-  WINDY,
 } from './../../constants/weathers';
 import './style.css';
+
+
 
 const data={
   temperature:25,
@@ -14,27 +17,24 @@ const data={
   wind:'10 km/h',
 }
 
-const data2={
-  temperature:15,
-  weatherState:WINDY,
-  humidity:20,
-  wind:'30 km/h',
-}
-
 class WeatherLocation extends Component{
 constructor(){
     super();
     this.state = {
-      city:'San José (SJO)',
+      city:'San José, CRC',
       data: data,
     };
 }
 
+
 handleUpdateClick= () => {
-  console.log("Actualizando ...");
-  this.setState({
-    // city:'Panamá (PTY)',
-    data:data2,
+  fetch(api_weather).then(response=>{
+    return response.json();
+  }).then(data => {
+    const newWeather = transformWeather(data);
+    this.setState({
+      data: newWeather
+    });
   });
 }
 
